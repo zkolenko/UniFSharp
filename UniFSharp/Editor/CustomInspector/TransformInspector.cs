@@ -25,12 +25,11 @@ namespace UniFSharp
         public override void OnInspectorGUI()
         {
 
-            base.OnInspectorGUI();
-            //EditorGUILayout.BeginVertical();
-            //(this.target as Transform).localPosition = EditorGUILayout.Vector3Field("Local Position", (this.target as Transform).localPosition);
-            //(this.target as Transform).localRotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Local Rotation", (this.target as Transform).localRotation.eulerAngles));
-            //(this.target as Transform).localScale = EditorGUILayout.Vector3Field("Local Scale", (this.target as Transform).localScale);
-            //EditorGUILayout.EndVertical();
+            EditorGUILayout.BeginVertical();
+            (this.target as Transform).localPosition = EditorGUILayout.Vector3Field("Local Position", (this.target as Transform).localPosition);
+            (this.target as Transform).localRotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Local Rotation", (this.target as Transform).localRotation.eulerAngles));
+            (this.target as Transform).localScale = EditorGUILayout.Vector3Field("Local Scale", (this.target as Transform).localScale);
+            EditorGUILayout.EndVertical();
 
             // F# Script Drag % Drop
             if (DragAndDrop.objectReferences.Length > 0 && AssetDatabase.GetAssetPath(DragAndDrop.objectReferences[0]).EndsWith(".fs"))
