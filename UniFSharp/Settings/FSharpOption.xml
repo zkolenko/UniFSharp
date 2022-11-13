@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FSharpOption xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <foldoutIDE>true</foldoutIDE>
+  <vsVersion>Vs2022</vsVersion>
+  <foldoutFsprojDetail>false</foldoutFsprojDetail>
+  <netFramework>Net48</netFramework>
+  <assemblyName>AssemblyFSharp</assemblyName>
+  <rootNameSpace>AssemblyFSharp</rootNameSpace>
+  <assemblyNameEditor>AssemblyFSharpEditor</assemblyNameEditor>
+  <rootNameSpaceEditor>AssemblyFSharpEditor</rootNameSpaceEditor>
+  <foldoutOther>true</foldoutOther>
+  <buildLogConsoleOutput>true</buildLogConsoleOutput>
+  <assemblySearch>Simple</assemblySearch>
+</FSharpOption>
