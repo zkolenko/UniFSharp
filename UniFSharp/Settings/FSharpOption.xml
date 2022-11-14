@@ -11,4 +11,5 @@
   <foldoutOther>true</foldoutOther>
   <buildLogConsoleOutput>true</buildLogConsoleOutput>
   <assemblySearch>Simple</assemblySearch>
+  <addCSharpProjectsToAssembly>false</addCSharpProjectsToAssembly>
 </FSharpOption>

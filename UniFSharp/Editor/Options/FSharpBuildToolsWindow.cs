@@ -25,10 +25,9 @@ namespace UniFSharp
 
         public static void SetWindowSize(EditorWindow window)
         {
-            var width = EditorPrefs.GetFloat("UnityEditor.PreferencesWindoww", 500);
-            var height = EditorPrefs.GetFloat("UnityEditor.PreferencesWindowh", 400);
+            var width = EditorPrefs.GetFloat("UnityEditor.PreferencesWindoww", 400);
+            var height = EditorPrefs.GetFloat("UnityEditor.PreferencesWindowh", 200);
             window.minSize = new Vector2(width, height);
-            window.maxSize = window.minSize;
         }
         static void Initialize()
         {
@@ -115,6 +114,13 @@ namespace UniFSharp
             var beforerootNameSpaceEditor = option.rootNameSpaceEditor;
             option.rootNameSpaceEditor = EditorGUILayout.TextField("RootNamespace(Editor)", option.rootNameSpaceEditor);
             if (beforerootNameSpaceEditor != option.rootNameSpaceEditor)
+            {
+                SerializerUtil.Save(option);
+            }
+            
+            var beforeaddCSharpProjectsToAssembly = option.addCSharpProjectsToAssembly;
+            option.addCSharpProjectsToAssembly = EditorGUILayout.Toggle("Add CSharp projects", option.addCSharpProjectsToAssembly);
+            if (beforeaddCSharpProjectsToAssembly != option.addCSharpProjectsToAssembly)
             {
                 SerializerUtil.Save(option);
             }

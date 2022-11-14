@@ -28,6 +28,8 @@ namespace UniFSharp
 
         // AssemblySearch
         public AssemblySearch assemblySearch = AssemblySearch.Simple;
+        
+        public bool addCSharpProjectsToAssembly = false; 
     }
 
     public enum VsVersion

@@ -21,7 +21,12 @@ namespace UniFSharp
                 {
                     var fileName = Path.GetFileNameWithoutExtension(pathName);
                     var slnGuidValue = Guid.NewGuid().ToString();
-                    var csharpProjects = GetAllCSharpProjects(slnGuidValue);
+                    string csharpProjects = "";
+                    if (FSharpBuildToolsWindow.FSharpOption.addCSharpProjectsToAssembly)
+                    {
+                        csharpProjects = GetAllCSharpProjects(slnGuidValue);
+                    }
+
                     var sln = Regex.Replace(sr.ReadToEnd(), "#SolutionGuid#", slnGuidValue)
                                 .Replace("#NormalProjectGuid#", normalProjectGuid)
                                 .Replace("#EditorProjectGuid#", editorProjectGuid)
