@@ -46,7 +46,7 @@ namespace UniFSharp
             return window;
         }
 
-        [MenuItem("UniFSharp" + "/Option %&O", false, 50)]
+        [MenuItem("UniFSharp" + "/Option %&O", false, 70)]
         public static void ShowWindow()
         {
             OpenWindow();

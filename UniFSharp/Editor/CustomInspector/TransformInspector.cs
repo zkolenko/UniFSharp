@@ -24,7 +24,6 @@ namespace UniFSharp
 
         public override void OnInspectorGUI()
         {
-
             EditorGUILayout.BeginVertical();
             (this.target as Transform).localPosition = EditorGUILayout.Vector3Field("Local Position", (this.target as Transform).localPosition);
             (this.target as Transform).localRotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Local Rotation", (this.target as Transform).localRotation.eulerAngles));

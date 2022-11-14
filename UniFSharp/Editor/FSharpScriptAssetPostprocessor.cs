@@ -129,7 +129,7 @@ namespace UniFSharp
         static void createOrUpdateProject(ProjectFileType projectFileType)
         {
             var fsprojFileName = FSharpProject.GetFSharpProjectFileName(projectFileType);
-            var fsprojFilePath = FSharpProject.GetFSharpProjectPath(fsprojFileName);
+            var fsprojFilePath = FSharpProject.GetProjectPath(fsprojFileName);
             if (File.Exists(fsprojFilePath) == false)
             {
                 FSharpProject.CreateFSharpProjectFile(projectFileType);

@@ -16,14 +16,6 @@ namespace UniFSharp
             {
                 Directory.CreateDirectory(outputDirPath);
             }
-            else
-            {
-                //var files = Directory.GetFiles(outputDirPath);
-                //foreach (var file in files)
-                //{
-                //    File.Delete(file);
-                //}
-            }
         }
 
 
@@ -34,15 +26,11 @@ namespace UniFSharp
             var args = new StringBuilder();
             var result = args.AppendFormat("\"{0}\"", projectFilePath)
                 .AppendFormat(" /p:Configuration={0}", isDebug ? "Debug" : "Release")
-                //.AppendFormat(" /p:OutputPath=\"{0}\"", outputDirPath)
                 .Append(" /p:OptionExplicit=true")
                 .Append(" /p:OptionCompare=binary")
                 .Append(" /p:OptionStrict=true")
                 .Append(" /p:OptionInfer=true")
                 .Append(" /p:BuildProjectReferences=false")
-                //.AppendFormat(" /p:DebugType={0}", isDebug ? "full" : "pdbonly")
-                //.AppendFormat(" /p:DebugSymbols={0}", isDebug ? "true" : "false")
-                //.AppendFormat(" /p:VisualStudioVersion={0}", "17.0") // TODO : 
                 .AppendFormat(" /l:FileLogger,Microsoft.Build;logfile={0}", String.Format("{0}/{1}.log", outputDirPath, isDebug ? "DebugBuild" : "ReleaseBuild"))
                 .Append(" /t:Clean;Rebuild")
                 .ToString();

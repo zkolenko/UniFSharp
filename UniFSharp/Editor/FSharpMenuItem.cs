@@ -71,6 +71,17 @@ namespace UniFSharp
             ExecuteMSBuild(ProjectFileType.VisualStudioEditor, false);
         }
 
+        [MenuItem(FSharpBuildTools.ToolName + "/", false, 40)]
+        static void Separator2() { }
+
+        [MenuItem(FSharpBuildTools.ToolName + "/Update Solution", false, 50)]
+        public static void updateSolution()
+        {
+            FSharpSolution.UpdateVisualStudioSolutionFile();
+        }
+        
+        [MenuItem(FSharpBuildTools.ToolName + "/", false, 60)]
+        static void Separator3() { }
 
         [MenuItem("Assets/Create/F# Script", false, 80)]
         public static void CreateNewBehaviourScript() { FSharpScriptCreateAsset.CreateFSharpScript("NewBehaviourScript.fs"); }

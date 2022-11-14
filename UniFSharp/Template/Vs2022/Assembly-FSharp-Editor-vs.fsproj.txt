@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-	<TargetNuGetMoniker>#TargetFrameworkVersion#</TargetNuGetMoniker>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<DocumentationFile>#DocumentationFileEditor#.XML</DocumentationFile>
   </PropertyGroup>
@@ -33,7 +32,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-	<TargetNuGetMoniker>#TargetFrameworkVersion#</TargetNuGetMoniker>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<DocumentationFile>#DocumentationFileEditor#.XML</DocumentationFile>
   </PropertyGroup>
@@ -48,17 +46,15 @@
 	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	<CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
   </PropertyGroup>
-  <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="FSharpItems">
 #FSharpItems#  </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="CSharpProjects">
+#CSharpProjects#  </ItemGroup>
+  <ItemGroup Label="ApplicationDlls">
 #ApplicationDlls#  </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="ScriptAssembliesDlls">
 #ScriptAssembliesDlls#  </ItemGroup>
 
-  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

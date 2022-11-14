@@ -12,14 +12,10 @@ namespace UniFSharp
 {
     public static class FSharpProject
     {
-        const string xmlSourceFileDataEnter = "    <Compile Include=\"";
-        const string xlmSourceFileDataEnding = "\" />\n";
-
-
         public static string GetProjectGuid(ProjectFileType projectFileType)
         {
             var fsprojFileName = GetFSharpProjectFileName(projectFileType);
-            var vsFsprojPath = GetFSharpProjectPath(fsprojFileName);
+            var vsFsprojPath = GetProjectPath(fsprojFileName);
             if (File.Exists(vsFsprojPath) == false)
             {
                 CreateFSharpProjectFile(projectFileType);
@@ -34,7 +30,6 @@ namespace UniFSharp
                         .First();
             return projectGuid;
         }
-
 
 
 
@@ -81,9 +76,9 @@ namespace UniFSharp
             res = PathUtil.AppendDirSep(res);
             return res;
         }
-        public static string GetFSharpProjectPath(string fsprojFileName)
+        public static string GetProjectPath(string fileName)
         {
-            return GetProjectRootPath() + fsprojFileName;
+            return GetProjectRootPath() + fileName;
         }
         public static string GetFSharpBinPath()
         {
@@ -175,7 +170,7 @@ namespace UniFSharp
         public static string GetFSharpProjectFilePath(ProjectFileType projectFileType)
         {
             string fsharpPrjectFileName = GetFSharpProjectFileName(projectFileType);
-            return GetFSharpProjectPath(fsharpPrjectFileName);
+            return GetProjectPath(fsharpPrjectFileName);
         }
 
         public static IEnumerable<string> GetAllFSharpScriptAssets(ProjectFileType projectFileType)
@@ -208,7 +203,7 @@ namespace UniFSharp
                 if (File.Exists(absolutePath))
                 {
                     var relativePath = PathUtil.GetRelativePath(basePath, absolutePath);
-                    items += xmlSourceFileDataEnter + PathUtil.ReplaceDirSepFromAltSep(relativePath) + xlmSourceFileDataEnding;
+                    items += "    <Compile Include=\"" + PathUtil.ReplaceDirSepFromAltSep(relativePath) + "\" />\n";
                 }
             }
             return items;
@@ -254,6 +249,7 @@ namespace UniFSharp
                             .Replace("#DocumentationFile#", FSharpBuildTools.unityFsharpBinPath + @"\DocumentationFile")
                             .Replace("#DocumentationFileEditor#", FSharpBuildTools.unityFsharpBinPath + @"\DocumentationFileEditor")
                             .Replace("#FSharpItems#", GetFSharpItems(projectFileType))
+                            .Replace("#CSharpProjects#", "")
                             .Replace("#ApplicationDlls#", dllUnityEngine + dllUnityEditor)
                             .Replace("#ScriptAssembliesDlls#", GetDlls(Directory.GetFiles(PathUtil.ReplaceDirSepFromAltSep(Directory.GetCurrentDirectory() + @"\Library\ScriptAssemblies"), "*.dll", SearchOption.TopDirectoryOnly)));
                     sw.Write(data);
@@ -266,7 +262,7 @@ namespace UniFSharp
         public static string CreateFSharpProjectFile(ProjectFileType projectFileType)
         {
             string fsharpPrjectFileName = GetFSharpProjectFileName(projectFileType);
-            var vsFsprojPath = GetFSharpProjectPath(fsharpPrjectFileName);
+            var vsFsprojPath = GetProjectPath(fsharpPrjectFileName);
             if (File.Exists(vsFsprojPath))
             {
                 File.Delete(vsFsprojPath);
