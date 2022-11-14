@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
+	<TargetNuGetMoniker>#TargetFrameworkVersion#</TargetNuGetMoniker>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<DocumentationFile>#DocumentationFile#.XML</DocumentationFile>
   </PropertyGroup>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
+	<TargetNuGetMoniker>#TargetFrameworkVersion#</TargetNuGetMoniker>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	<DocumentationFile>#DocumentationFile#.XML</DocumentationFile>
   </PropertyGroup>
