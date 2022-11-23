@@ -94,13 +94,9 @@ namespace UniFSharp
     }
     public enum VsVersion
     {
-        [AliasName("Visual studio 2010")] Vs2010 = 0,
-        [AliasName("Visual studio 2012")] Vs2012 = 1,
-        [AliasName("Visual studio 2013")] Vs2013 = 2,
-        [AliasName("Visual studio 2014")] Vs2014 = 3,
-        [AliasName("Visual studio 2017")] Vs2017 = 4,
-        [AliasName("Visual studio 2019")] Vs2019 = 5,
-        [AliasName("Visual studio 2022")] Vs2022 = 6
+        [AliasName("Visual studio 2017")] Vs2017 = 0,
+        [AliasName("Visual studio 2019")] Vs2019 = 1,
+        [AliasName("Visual studio 2022")] Vs2022 = 2
     }
     public enum AssemblySearch
     {
