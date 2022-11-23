@@ -9,10 +9,10 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyFileVersion("1.0.0")>]
 [<assembly: AssemblyInformationalVersion("1.0.0")>]
 
-[<assembly: AssemblyTitle("#AssemblyName#")>]
-[<assembly: AssemblyDescription("#AssemblyName#")>]
+[<assembly: AssemblyTitle("#NameSpace#")>]
+[<assembly: AssemblyDescription("#NameSpace#")>]
 [<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("#AssemblyName#")>]
+[<assembly: AssemblyProduct("#NameSpace#")>]
 [<assembly: AssemblyCopyright("Copyright (C) 2014")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: Guid("#Guid#")>]
 
 #if DEBUG
-[<assembly: InternalsVisibleTo("#AssemblyName#.Test")>]
+[<assembly: InternalsVisibleTo("#NameSpace#.Test")>]
 #endif
 
 #if DEBUG

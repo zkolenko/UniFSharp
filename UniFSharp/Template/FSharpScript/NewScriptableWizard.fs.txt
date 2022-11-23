@@ -1,4 +1,4 @@
-﻿namespace #RootNamespace#
+﻿namespace #NameSpace#
 open System
 open UnityEditor
 open UnityEngine

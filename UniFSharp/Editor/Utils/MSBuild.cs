@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using UniFSharp;
 using UnityEditor;
 
 namespace UniFSharp
@@ -30,6 +29,8 @@ namespace UniFSharp
                 .Append(" /p:OptionCompare=binary")
                 .Append(" /p:OptionStrict=true")
                 .Append(" /p:OptionInfer=true")
+                .Append(" /p:DebugType=embedded")
+                .AppendFormat(" /p:DebugSymbols={0}", (isDebug)?"true" : "false")
                 .Append(" /p:BuildProjectReferences=false")
                 .AppendFormat(" /l:FileLogger,Microsoft.Build;logfile={0}", String.Format("{0}/{1}.log", outputDirPath, isDebug ? "DebugBuild" : "ReleaseBuild"))
                 .Append(" /t:Clean;Rebuild")
@@ -38,19 +39,52 @@ namespace UniFSharp
         }
 
 
+        public static void ExecuteMSBuild(bool isdebug)
+        {
+            var option = FSharpOption.GetOptions();
 
+            string outputAssemblyPath = FSharpOption.fsharpBinPath;
+            if (option.buildLogConsoleOutput == false)
+            {
+                var handler = new DataReceivedEventHandler((x, e) => { });
+                MSBuild.Execute(FSharpOption.assemblyFileNamePath(), outputAssemblyPath, isdebug, handler, handler);
+            }
+            else
+            {
+                var outputHandler = new DataReceivedEventHandler((x, e) =>
+                {
+                    if (e != null && System.String.IsNullOrEmpty(e.Data) == false)
+                    {
+                        UnityEngine.Debug.Log(e.Data);
+                    }
+                });
+                var errorHandler = new DataReceivedEventHandler((x, e) =>
+                {
+                    if (e != null && System.String.IsNullOrEmpty(e.Data) == false)
+                    {
+                        UnityEngine.Debug.Log(e.Data);
+                    }
+                });
+                MSBuild.Execute(FSharpOption.assemblyFileNamePath(), outputAssemblyPath, isdebug, outputHandler, errorHandler);
+            }
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        }
 
         public static int Execute(string projectFilePath, string outputDirPath, bool isDebug, DataReceivedEventHandler outputDataReceivedEventHandler, DataReceivedEventHandler errorDataReceivedEventHandler)
         {
             using (var p = new Process())
             {
                 InitOutputDir(outputDirPath);
+
+                var filename = "cmd.exe";
+                var arguments = @"/c dotnet build " + (GetAargs(projectFilePath, outputDirPath, isDebug));
+
                 p.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(866);
                 p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.UseShellExecute = true;
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.Arguments = @"/c dotnet build " + (GetAargs(projectFilePath, outputDirPath, isDebug));
+                p.StartInfo.FileName = filename;
+                p.StartInfo.Arguments = arguments;
 
                 if (outputDataReceivedEventHandler != null || errorDataReceivedEventHandler != null)
                 {

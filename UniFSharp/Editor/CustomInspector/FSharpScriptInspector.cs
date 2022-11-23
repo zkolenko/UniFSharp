@@ -5,7 +5,7 @@ using UnityEngine;
 namespace UniFSharp
 {
 
-    [CustomEditor(typeof(UnityEngine.Object), true)]
+    [CustomEditor(typeof(UnityEditor.DefaultAsset))]
     public class FSharpScriptInspector : Editor
     {
         private string code;
@@ -13,12 +13,43 @@ namespace UniFSharp
         {
             Repaint();
         }
-
-        public override void OnInteractivePreviewGUI(Rect r, GUIStyle background)
+        
+        protected override bool ShouldHideOpenButton()
         {
-            base.OnInteractivePreviewGUI(r, background);
+            if (!AssetDatabase.GetAssetPath(Selection.activeObject).EndsWith(".fs"))
+            {
+                return base.ShouldHideOpenButton();
+            }
+            else
+            {
+                return true;
+            }
         }
 
+        protected override void OnHeaderGUI()
+        {
+            if (!AssetDatabase.GetAssetPath(Selection.activeObject).EndsWith(".fs"))
+            {
+                base.OnHeaderGUI();
+            }
+            else
+            {
+                base.OnHeaderGUI();
+                var rec = EditorGUILayout.BeginHorizontal();
+                if (GUI.Button(new Rect(rec.width - 160, 25, 155, 25), "open visual studio"))
+                {
+                    var path = AssetDatabase.GetAssetPath(Selection.activeObject);
+                    var basePath = FSharpProject.GetProjectRootPath();
+                    var fileName = PathUtil.GetAbsolutePath(basePath, path);
+                    FSharpSolution.OpenExternalVisualStudio(fileName);
+                }
+                EditorGUILayout.EndHorizontal();
+
+            }
+
+        }
+        
+        
         public override void OnInspectorGUI()
         {
             GUI.enabled = true;
@@ -37,7 +68,7 @@ namespace UniFSharp
                 EditorGUILayout.EndHorizontal();
 
                 var targetAssetPath = AssetDatabase.GetAssetPath(target);
-                if (!Directory.Exists(targetAssetPath) && File.Exists(targetAssetPath))
+                if (File.Exists(targetAssetPath))
                 {
                     var sr = File.OpenText(targetAssetPath);
                     code = sr.ReadToEnd();
@@ -55,5 +86,8 @@ namespace UniFSharp
                 }
             }
         }
+
+
+
     }
 }

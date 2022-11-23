@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using Unity.CodeEditor;
 using UnityEditor;
 
 namespace UniFSharp
@@ -7,81 +8,30 @@ namespace UniFSharp
     public static class FSharpMenuItem
     {
 
-        public static void ExecuteMSBuild(ProjectFileType projectfiletype, bool isdebug)
-        {
-            var vsFSharpPrjectPath = FSharpProject.GetFSharpProjectFilePath(projectfiletype);
-            if (File.Exists(vsFSharpPrjectPath) == false)
-            {
-                FSharpProject.CreateFSharpProjectFile(projectfiletype);
-            }
-            var outputAssemblyPath = FSharpBuildTools.unityFsharpBinPath;
-            if (FSharpBuildToolsWindow.FSharpOption.buildLogConsoleOutput == false)
-            {
-                var handler = new DataReceivedEventHandler((x, e) => { });
-                MSBuild.Execute(vsFSharpPrjectPath, outputAssemblyPath, isdebug, handler, handler);
-            }
-            else
-            {
-                var outputHandler = new DataReceivedEventHandler((x, e) =>
-                {
-                    if (e != null && System.String.IsNullOrEmpty(e.Data) == false)
-                    {
-                        UnityEngine.Debug.Log(e.Data);
-                    }
-                });
-                var errorHandler = new DataReceivedEventHandler((x, e) =>
-                {
-                    if (e != null && System.String.IsNullOrEmpty(e.Data) == false)
-                    {
-                        UnityEngine.Debug.Log(e.Data);
-                    }
-                });
-                MSBuild.Execute(vsFSharpPrjectPath, outputAssemblyPath, isdebug, outputHandler, errorHandler);
-            }
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        }
-
-
-
-
-        [MenuItem(FSharpBuildTools.ToolName + "/Rebuild(Debug)", false, 10)]
+        [MenuItem(FSharpOption.ToolName + "/Rebuild(Debug)", false, 10)]
         public static void RebuildDebug()
         {
-            ExecuteMSBuild(ProjectFileType.VisualStudioNormal, true);
+            MSBuild.ExecuteMSBuild(true);
         }
-        [MenuItem(FSharpBuildTools.ToolName + "/Rebuild(Release)", false, 11)]
+        [MenuItem(FSharpOption.ToolName + "/Rebuild(Release)", false, 11)]
         public static void RebuildRelease()
         {
-            ExecuteMSBuild(ProjectFileType.VisualStudioNormal, false);
+            MSBuild.ExecuteMSBuild(false);
         }
 
-        [MenuItem(FSharpBuildTools.ToolName + "/", false, 20)]
-        static void Separator() { }
-
-
-        [MenuItem(FSharpBuildTools.ToolName + "/Editor Rebuild(Debug)", false, 30)]
-        public static void editorRebuildDebug()
-        {
-            ExecuteMSBuild(ProjectFileType.VisualStudioEditor, true);
-        }
-
-        [MenuItem(FSharpBuildTools.ToolName + "/Editor Rebuild(Release)", false, 31)]
-        public static void editorRebuildRelease()
-        {
-            ExecuteMSBuild(ProjectFileType.VisualStudioEditor, false);
-        }
-
-        [MenuItem(FSharpBuildTools.ToolName + "/", false, 40)]
-        static void Separator2() { }
-
-        [MenuItem(FSharpBuildTools.ToolName + "/Update Solution", false, 50)]
+        [MenuItem(FSharpOption.ToolName + "/Update Solution", false, 30)]
         public static void updateSolution()
         {
             FSharpSolution.UpdateVisualStudioSolutionFile();
+            FSharpProject.UpdateProjectFile();
+            FSharpScriptAssetPostprocessor.updateCompileIncludeDlls(true,true,true);
+            FSharpScriptAssetPostprocessor.createOrUpdateProject();
         }
-        
-        [MenuItem(FSharpBuildTools.ToolName + "/", false, 60)]
-        static void Separator3() { }
+        [MenuItem(FSharpOption.ToolName + "/Open F# Project", false, 50)]
+        public static void openProject()
+        {
+            FSharpSolution.OpenExternalVisualStudio();
+        }
 
         [MenuItem("Assets/Create/F# Script", false, 80)]
         public static void CreateNewBehaviourScript() { FSharpScriptCreateAsset.CreateFSharpScript("NewBehaviourScript.fs"); }
@@ -94,9 +44,6 @@ namespace UniFSharp
         [MenuItem("Assets/Create/F# Script+/TabWindow", false, 21)]
         public static void createNewTabEditorWindow() { FSharpScriptCreateAsset.CreateFSharpScript("NewTabWindow.fs"); }
 
-
-        //[MenuItem("Assets/Create/F# Script+/more...", false, 101)]
-        //public static void more() { MoreFSharpScriptWindow.ShowWindow(); }
 
     }
 }

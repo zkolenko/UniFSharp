@@ -20,8 +20,7 @@ namespace UniFSharp
                     var filename = Path.GetFileNameWithoutExtension(pathName).Replace(" ", "");
                     var text = Regex.Replace(sr.ReadToEnd(), "#ClassName#", filename)
                         .Replace("#ModuleName#", filename)
-                        .Replace("#RootNamespace#", FSharpBuildToolsWindow.FSharpOption.rootNameSpace)
-                        .Replace("#AssemblyName#", FSharpBuildToolsWindow.FSharpOption.assemblyName)
+                        .Replace("#NameSpace#", FSharpOption.GetOptions().rootName)
                         .Replace("#Guid#", System.Guid.NewGuid().ToString());
                     sw.Write(text);
                     AssetDatabase.ImportAsset(pathName);
@@ -33,7 +32,7 @@ namespace UniFSharp
 
         static public void CreateFSharpScript(string fileName)
         {
-            var tempFilePath = FSharpBuildTools.fsharpScriptTemplatePath + fileName + FSharpBuildTools.txtExtension;
+            var tempFilePath = FSharpOption.fsharpScriptTemplatePath() + fileName + FSharpOption.txtExtension;
             CreateScript(fileName, tempFilePath);
         }
         static public void CreateScript(string defaultName, string templatePath)
@@ -48,15 +47,8 @@ namespace UniFSharp
             {
                 directoryName = PathUtil.GetDirectoryName(assetPath);
             }
-            if (FSharpProject.FsharpScriptCreatable(directoryName) == false)
-            {
-                EditorUtility.DisplayDialog("Warning", "Folder name that contains the F# Script file,\n must be unique in the entire F# Project.", "OK");
-            }
-            else
-            {
-                Texture2D icon = (Texture2D)AssetDatabase.LoadAssetAtPath(FSharpBuildTools.fsharpIconPath, typeof(Texture2D));
-                ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<FSharpScriptCreateAsset>(), defaultName, icon, templatePath);
-            }
+            Texture2D icon = (Texture2D)AssetDatabase.LoadAssetAtPath(FSharpOption.fsharpIconPath, typeof(Texture2D));
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<FSharpScriptCreateAsset>(), defaultName, icon, templatePath);
         }
     }
 }

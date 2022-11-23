@@ -124,5 +124,5 @@ namespace UniFSharp
             var absolutePath = (u2.LocalPath).Replace("%25", "%");
             return absolutePath;
         }
-    }
+    } 
 }

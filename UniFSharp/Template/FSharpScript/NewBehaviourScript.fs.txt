@@ -1,4 +1,4 @@
-﻿namespace #RootNamespace#
+﻿namespace #NameSpace#
 open UnityEngine
 
 type #ClassName# () =
