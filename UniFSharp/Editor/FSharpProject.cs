@@ -17,7 +17,7 @@ namespace UniFSharp
         public static string GetProjectGuid()
         {
             ChekProjectFile();
-            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath());
+            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath);
             var ns = "{" + String.Format("{0}", fsprojXDoc.Root.Attribute(XName.Get("xmlns")).Value) + "}";
             var projectGuid = fsprojXDoc.Root
                         .Elements(XName.Get(ns + "PropertyGroup"))
@@ -30,10 +30,10 @@ namespace UniFSharp
 
         public static void ChekProjectFile()
         {
-            var assembliePath = FSharpOption.assemblyFileNamePath();
+            var assembliePath = FSharpOption.assemblyFileNamePath;
             if (File.Exists(assembliePath)) return;
 
-            using (var template = new StreamReader(FSharpOption.templateAssembly() , new UTF8Encoding(false)))
+            using (var template = new StreamReader(FSharpOption.templateAssembly , new UTF8Encoding(false)))
             {
                 using (var sw = File.CreateText(assembliePath))
                 {
@@ -103,7 +103,7 @@ namespace UniFSharp
 
         static public IEnumerable<string> GetApplicationDlls(bool autoConnect)
         {
-            var appDlls = FSharpOption.autoConnectApplicationDll();
+            var appDlls = FSharpOption.autoConnectApplicationDll;
             var dllApplication = Directory.GetFiles(FSharpOption.unityApplicationllPath, "*.dll", SearchOption.AllDirectories)
                 .Where(x => {
                     var res = appDlls.Contains(Path.GetFileName(x).ToLower());
@@ -113,7 +113,7 @@ namespace UniFSharp
         }
         static public IEnumerable<string> GetAssemblieDlls(bool autoConnect)
         {
-            var assDlls = FSharpOption.autoConnectAssembliesDll();
+            var assDlls = FSharpOption.autoConnectAssembliesDll;
             var dllAssemblies = Directory.GetFiles(FSharpOption.unityAssemblePath, "*.dll", SearchOption.AllDirectories)
                 .Where(x => {
                     var res = assDlls.Contains(Path.GetFileName(x).ToLower());
@@ -126,10 +126,10 @@ namespace UniFSharp
         {
             ChekProjectFile();
 
-            var assembliePath = FSharpOption.assemblyFileNamePath();
+            var assembliePath = FSharpOption.assemblyFileNamePath;
             var fsprojXDoc = XDocument.Load(assembliePath);
             var ns = "{" + String.Format("{0}", fsprojXDoc.Root.Attribute(XName.Get("xmlns")).Value) + "}";
-            var option = FSharpOption.GetOptions();
+            var option = FSharpOptionStorage.GetOptions();
 
             var guid = "{" + UnityEditor.VisualStudioIntegration.SolutionGuidGenerator.GuidForProject(FSharpOption.assemblyFileName).ToString() + "}";
             // update 

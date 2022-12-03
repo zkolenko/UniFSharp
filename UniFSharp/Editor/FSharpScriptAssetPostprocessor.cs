@@ -1,9 +1,8 @@
-using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -14,6 +13,7 @@ namespace UniFSharp
     public class FSharpScriptAssetPostprocessor : AssetPostprocessor
     {
 
+        public static bool UpdateProject = false;
 
         public static XElement getXDocElement(XDocument fsprojXDoc, string ns, string elementName, string label)
         {
@@ -200,9 +200,9 @@ namespace UniFSharp
         {
             FSharpProject.ChekProjectFile();
 
-            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath());
+            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath);
             var ns = "{" + String.Format("{0}", fsprojXDoc.Root.Attribute(XName.Get("xmlns")).Value) + "}";
-            var option = FSharpOption.GetOptions();
+            var option = FSharpOptionStorage.GetOptions();
 
             if (updateAplicationDll)
             {
@@ -230,20 +230,20 @@ namespace UniFSharp
                 addReferenceIncludeDll(scriptAssetDlls, ns, option.assetDlls.ToArray());
             }
 
-            fsprojXDoc.Save(FSharpOption.assemblyFileNamePath());
+            fsprojXDoc.Save(FSharpOption.assemblyFileNamePath);
         }
 
         public static void createOrUpdateProject()
         {
             FSharpProject.ChekProjectFile();
 
-            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath());
+            var fsprojXDoc = XDocument.Load(FSharpOption.assemblyFileNamePath);
             var ns = "{" + String.Format("{0}", fsprojXDoc.Root.Attribute(XName.Get("xmlns")).Value) + "}";
             string labelItems = "FSharpItems";
             string[] compileIncludes = getXDocCompileIncludes(fsprojXDoc, ns, labelItems);
             addCompileIncludeFiles(fsprojXDoc, ns, compileIncludes, labelItems);
             removeCompileIncludeFiles(fsprojXDoc, ns, compileIncludes, labelItems);
-            fsprojXDoc.Save(FSharpOption.assemblyFileNamePath());
+            fsprojXDoc.Save(FSharpOption.assemblyFileNamePath);
         }
 
         static void deleteProject(string _assetPath)
@@ -276,13 +276,14 @@ namespace UniFSharp
             var importedAssets = filterFSharpScript(_importedAssets);
             if (importedAssets.Length > 0)
             {
-                createOrUpdateProject();
+                UpdateProject = true;
             }
             FSharpSolution.CreateVisualStudioSolutionFile();
         }
         static void onDeletedAssets(string[] _deletedAssets)
         {
             var deletedAssets = filterFSharpScript(_deletedAssets);
+            if (deletedAssets.Length > 0) UpdateProject = true;
             foreach (var assetPath in deletedAssets)
             {
                 deleteProject(assetPath);
@@ -303,17 +304,44 @@ namespace UniFSharp
         {
             if (filterFSharpScript(movedFromPath).Any())
             {
-                createOrUpdateProject();
+                UpdateProject = true;
             }
-
+        }
+        static IEnumerable Wait()
+        {
+            yield return new WaitForSeconds(1);
         }
 
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromPath)
         {
             onImportedAssets(importedAssets);
             onDeletedAssets(deletedAssets);
-            onMovedAssets(movedAssets);
+            //onMovedAssets(movedAssets);
             onMovedFromPathAssets(movedFromPath);
+
+            var option = FSharpOptionStorage.GetOptions();
+            if (option.autoBuild != AutoBuild.None && UpdateProject)
+            {
+                createOrUpdateProject();
+                while (EditorApplication.isUpdating)
+                {
+                    Wait();
+                }
+                switch (option.autoBuild)
+                {
+                    case AutoBuild.None:
+                        break;
+                    case AutoBuild.Debug:
+                        FSharpMenuItem.RebuildDebug();
+                        break;
+                    case AutoBuild.Release:
+                        FSharpMenuItem.RebuildRelease();
+                        break;
+                    default:
+                        break;
+                }
+                UpdateProject = false;
+            }
         }
 
     }

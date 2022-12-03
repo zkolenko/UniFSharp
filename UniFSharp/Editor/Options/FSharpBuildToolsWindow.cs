@@ -55,19 +55,18 @@ namespace UniFSharp
         static public CustomSections section;
         public GUIStyle preferencesSectionStyle;
 
-        private static FSharpOption option = null;
+        private static FSharpOptionStorage option = null;
 
         Vector2 scrollDllsPosition = Vector2.zero;
         static FileData[] dllApplication = null;
         static FileData[] dllAssemblies = null;
         static FileData[] dllAsset = null;
-        static FileData[] csProjects = null;
 
 
         [MenuItem("UniFSharp" + "/Option %&O", false, 70)]
         public static void ShowWindow()
         {
-            option = FSharpOption.GetOptions();   
+            option = FSharpOptionStorage.GetOptions();   
             
             var window = UnityEditor.EditorWindow.GetWindow<FSharpBuildToolsWindow>(true, "UniFSharp" + " - F# Build Tools for Unity");
             section = CustomSections.applicationDll;
@@ -88,7 +87,7 @@ namespace UniFSharp
                 .ToArray();
             option.applicationDlls = option.applicationDlls.Where(x => dllApplication.ToList().Exists(y => y.path == x)).ToList();
 
-            var assDlls = FSharpOption.autoConnectAssembliesDll();
+            var assDlls = FSharpOption.autoConnectAssembliesDll;
             dllAssemblies = Directory.GetFiles(FSharpOption.unityAssemblePath, "*.dll", SearchOption.AllDirectories)
                 .Where(x => !assDlls.Contains(Path.GetFileName(x).ToLower()))
                 .Select(x => {
@@ -187,6 +186,8 @@ namespace UniFSharp
             option.rootName = EditorGUILayout.TextField("Root name", option.rootName);
 
             option.buildLogConsoleOutput = EditorGUILayout.Toggle("Build Log Output", option.buildLogConsoleOutput);
+            
+            option.autoBuild = this.EnumPopupAsAliasName<AutoBuild>("Auto Build", option.autoBuild);
 
             GUILayout.Box("", GUILayout.Width(this.position.width), GUILayout.Height(1));
 

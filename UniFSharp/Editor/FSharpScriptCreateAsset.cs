@@ -20,19 +20,21 @@ namespace UniFSharp
                     var filename = Path.GetFileNameWithoutExtension(pathName).Replace(" ", "");
                     var text = Regex.Replace(sr.ReadToEnd(), "#ClassName#", filename)
                         .Replace("#ModuleName#", filename)
-                        .Replace("#NameSpace#", FSharpOption.GetOptions().rootName)
+                        .Replace("#NameSpace#", FSharpOptionStorage.GetOptions().rootName)
                         .Replace("#Guid#", System.Guid.NewGuid().ToString());
                     sw.Write(text);
-                    AssetDatabase.ImportAsset(pathName);
-                    var uo = AssetDatabase.LoadAssetAtPath(pathName, typeof(UnityEngine.Object));
-                    ProjectWindowUtil.ShowCreatedAsset(uo);
+                    sw.Close();
                 }
             }
+            AssetDatabase.ImportAsset(pathName, ImportAssetOptions.ForceUpdate);
+            var uo = AssetDatabase.LoadAssetAtPath(pathName, typeof(UnityEngine.Object));
+            ProjectWindowUtil.ShowCreatedAsset(uo);
+
         }
 
         static public void CreateFSharpScript(string fileName)
         {
-            var tempFilePath = FSharpOption.fsharpScriptTemplatePath() + fileName + FSharpOption.txtExtension;
+            var tempFilePath = FSharpOption.fsharpScriptTemplatePath + fileName + FSharpOption.txtExtension;
             CreateScript(fileName, tempFilePath);
         }
         static public void CreateScript(string defaultName, string templatePath)

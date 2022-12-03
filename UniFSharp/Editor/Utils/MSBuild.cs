@@ -41,13 +41,13 @@ namespace UniFSharp
 
         public static void ExecuteMSBuild(bool isdebug)
         {
-            var option = FSharpOption.GetOptions();
+            var option = FSharpOptionStorage.GetOptions();
 
             string outputAssemblyPath = FSharpOption.fsharpBinPath;
             if (option.buildLogConsoleOutput == false)
             {
                 var handler = new DataReceivedEventHandler((x, e) => { });
-                MSBuild.Execute(FSharpOption.assemblyFileNamePath(), outputAssemblyPath, isdebug, handler, handler);
+                MSBuild.Execute(FSharpOption.assemblyFileNamePath, outputAssemblyPath, isdebug, handler, handler);
             }
             else
             {
@@ -65,7 +65,7 @@ namespace UniFSharp
                         UnityEngine.Debug.Log(e.Data);
                     }
                 });
-                MSBuild.Execute(FSharpOption.assemblyFileNamePath(), outputAssemblyPath, isdebug, outputHandler, errorHandler);
+                MSBuild.Execute(FSharpOption.assemblyFileNamePath, outputAssemblyPath, isdebug, outputHandler, errorHandler);
             }
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         }

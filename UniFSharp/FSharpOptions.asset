@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28554722ecf4d064da06010777864cd1, type: 3}
   m_Name: FSharpOptions
   m_EditorClassIdentifier: 
-  vsVersion: 6
-  netFramework: 2
+  vsVersion: 2
+  netFramework: 0
   rootName: FSharp
   buildLogConsoleOutput: 1
+  autoBuild: 0
   assemblySearch: 0
   applicationDlls: []
-  assemblieDlls:
-  - E:\Unity3D\Projects\Empty\Library\ScriptAssemblies\Assembly-CSharp-Editor.dll
-  assetDlls:
-  - E:\Unity3D\Projects\Empty\Assets\FSharpDll\fs.dll
+  assemblieDlls: []
+  assetDlls: []

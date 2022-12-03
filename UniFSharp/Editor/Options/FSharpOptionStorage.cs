@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -9,39 +8,8 @@ using UnityEngine;
 
 namespace UniFSharp
 {
-    public class FSharpOption : ScriptableObject
+    public class FSharpOptionStorage : ScriptableObject
     {
-        public const string ToolName = "UniFSharp";
-        public const string fsExtension = ".fs";
-        public const string txtExtension = ".txt";
-        public const string fsExtensionWildcard = "*.fs";
-        public const string txtExtensionWildcard = "*.txt";
-        public const string assemblieName = "Assemblie-FSharp";
-        public const string solutionFileName = "Solution-FSharp.sln";  
-        public const string assemblyFileName = "Assembly-FSharp.fsproj";
-        public static string assemblyFileNamePath() { return FSharpProject.GetProjectRootPath() + assemblyFileName; }
-        public static string solutionFileNamePath() { return FSharpProject.GetProjectRootPath() + solutionFileName; }
-        public static string unityApplicationllPath = PathUtil.ReplaceDirSepFromAltSep(UnityEditor.EditorApplication.applicationContentsPath + @"\Managed\");
-        public static string unityAssemblePath = Directory.GetCurrentDirectory() + @"\Library\ScriptAssemblies";
-        public static string unityProjectPath = Directory.GetCurrentDirectory();
-        public static string unityAssetsPath = Directory.GetCurrentDirectory() + @"\Assets";
-        public const string fsharpBinPath = projectRootPath + @"Dll";
-
-        public const string projectRootPath = @"Assets\" + ToolName + @"\";
-        public static string projectRootAbsolutePath = Directory.GetCurrentDirectory() + @"\" + projectRootPath;
-        public const string fsharpIconPath = projectRootPath + @"Texture\fsharp_icon.png";
-
-        public static List<string> autoConnectApplicationDll() { return new List<string> { "unityeditor.dll", "unityengine.dll", "unityeditor.coremodule.dll", "unityengine.coremodule.dll" }; }
-        public static List<string> autoConnectAssembliesDll() { return new List<string> { "assembly-csharp.dll", "assembly-csharp-editor.dll" }; }
-
-        // TEMPLATES
-        public static string templatePath() { return FSharpProject.GetProjectRootPath() + projectRootPath + @"Template\"; }
-        public static string templateAssembly() { return templatePath() + @"VisualStudio\Assembly.fsproj.txt"; }
-        public static string templateSolution() { return templatePath() + @"VisualStudio\Solution.sln.txt"; }
-        public static string fsharpScriptTemplatePath() { return templatePath() + @"FSharpScript\"; }
-
-
-
         [ReadOnly, SerializeField]
         public VsVersion vsVersion = VsVersion.Vs2022;
         [ReadOnly, SerializeField]
@@ -52,6 +20,8 @@ namespace UniFSharp
         // Build Log Console Outoput
         [ReadOnly, SerializeField]
         public bool buildLogConsoleOutput = true;
+        [ReadOnly, SerializeField]
+        public AutoBuild autoBuild = AutoBuild.None;
 
         [ReadOnly, SerializeField]
         public AssemblySearch assemblySearch = AssemblySearch.Simple;
@@ -62,14 +32,14 @@ namespace UniFSharp
         [ReadOnly, SerializeField]
         public List<string> assetDlls = new List<string>();
 
-        public static FSharpOption GetOptions()
+        public static FSharpOptionStorage GetOptions()
         {
-            string path = projectRootPath + "FSharpOptions.asset";
+            string path = FSharpOption.projectRootPath + "FSharpOptions.asset";
             if (File.Exists(path)) {
-                var result = AssetDatabase.LoadAssetAtPath<FSharpOption>(path);
+                var result = AssetDatabase.LoadAssetAtPath<FSharpOptionStorage>(path);
                 return result;
             } else {
-                FSharpOption asset = ScriptableObject.CreateInstance<FSharpOption>();
+                FSharpOptionStorage asset = ScriptableObject.CreateInstance<FSharpOptionStorage>();
                 AssetDatabase.CreateAsset(asset, path);
                 AssetDatabase.SaveAssets();
                 return asset;
@@ -78,7 +48,37 @@ namespace UniFSharp
 
     }
 
+    public static class FSharpOption
+    {
+        public const string ToolName = "UniFSharp";
+        public const string fsExtension = ".fs";
+        public const string txtExtension = ".txt";
+        public const string fsExtensionWildcard = "*.fs";
+        public const string txtExtensionWildcard = "*.txt";
+        public const string assemblieName = "Assemblie-FSharp";
+        public const string solutionFileName = "Solution-FSharp.sln";
+        public const string assemblyFileName = "Assembly-FSharp.fsproj";
+        public static string assemblyFileNamePath = FSharpProject.GetProjectRootPath() + assemblyFileName;
+        public static string solutionFileNamePath = FSharpProject.GetProjectRootPath() + solutionFileName;
+        public static string unityApplicationllPath = PathUtil.ReplaceDirSepFromAltSep(UnityEditor.EditorApplication.applicationContentsPath + @"\Managed\");
+        public static string unityAssemblePath = Directory.GetCurrentDirectory() + @"\Library\ScriptAssemblies";
+        public static string unityProjectPath = Directory.GetCurrentDirectory();
+        public static string unityAssetsPath = Directory.GetCurrentDirectory() + @"\Assets";
+        public const string fsharpBinPath = projectRootPath + @"Dll";
 
+        public const string projectRootPath = @"Assets\" + ToolName + @"\";
+        public static string projectRootAbsolutePath = Directory.GetCurrentDirectory() + @"\" + projectRootPath;
+        public const string fsharpIconPath = projectRootPath + @"Texture\fsharp_icon.png";
+
+        public static List<string> autoConnectApplicationDll = new List<string> { "unityeditor.dll", "unityengine.dll", "unityeditor.coremodule.dll", "unityengine.coremodule.dll" }; 
+        public static List<string> autoConnectAssembliesDll = new List<string> { "assembly-csharp.dll", "assembly-csharp-editor.dll" }; 
+
+        // TEMPLATES
+        public static string templatePath = FSharpProject.GetProjectRootPath() + projectRootPath + @"Template\"; 
+        public static string templateAssembly = templatePath + @"VisualStudio\Assembly.fsproj.txt"; 
+        public static string templateSolution = templatePath + @"VisualStudio\Solution.sln.txt"; 
+        public static string fsharpScriptTemplatePath = templatePath + @"FSharpScript\";
+    }
     public enum FSharpCore
     {
         [AliasName("FSharp.Core.4.0")] FSharpCore4 = 0,
@@ -102,6 +102,12 @@ namespace UniFSharp
     {
         [AliasName("Simple")] Simple = 0,
         [AliasName("F# Compiler Service")] CompilerService = 1
+    }
+    public enum AutoBuild
+    {
+        [AliasName("None")] None = 0,
+        [AliasName("Debug")] Debug = 1,
+        [AliasName("Release")] Release = 2
     }
 
 

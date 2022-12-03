@@ -97,7 +97,7 @@ namespace UniFSharp
 
                     var assem = Assembly.LoadFrom(dll);
                     IEnumerable<Type> behaviors = null;
-                    switch (FSharpOption.GetOptions().assemblySearch)
+                    switch (FSharpOptionStorage.GetOptions().assemblySearch)
                     {
                         case AssemblySearch.Simple:
                             var @namespace = GetNameSpace(AssetDatabase.GetAssetPath(draggedObject));

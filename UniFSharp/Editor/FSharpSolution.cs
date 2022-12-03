@@ -52,8 +52,8 @@ namespace UniFSharp
         {
             var vsSolutionFile = FSharpProject.GetProjectRootPath() + FSharpOption.solutionFileName;
             var projectGuid = FSharpProject.GetProjectGuid();
-            var vsSolutionPath = FSharpOption.solutionFileNamePath();
-            CreateSolutionFile(vsSolutionPath, FSharpOption.templateSolution(), projectGuid);
+            var vsSolutionPath = FSharpOption.solutionFileNamePath;
+            CreateSolutionFile(vsSolutionPath, FSharpOption.templateSolution, projectGuid);
         }
 
         public static string GetAllCSharpProjects(string slnGuidValue)
@@ -90,7 +90,7 @@ namespace UniFSharp
                 CreateVisualStudioSolutionFile();
             }
 
-            string vsVersion = AliasNameAttribute.ToAliasName<Enum, int>(FSharpOption.GetOptions().vsVersion);
+            string vsVersion = AliasNameAttribute.ToAliasName<Enum, int>(FSharpOptionStorage.GetOptions().vsVersion);
             solutionFilePath = PathUtil.ReplaceDirSepFromAltSep(solutionFilePath);
             fileName = PathUtil.ReplaceDirSepFromAltSep(fileName);
 
