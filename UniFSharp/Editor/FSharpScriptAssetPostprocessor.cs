@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UniFSharp
 {
@@ -320,9 +321,9 @@ namespace UniFSharp
             onMovedFromPathAssets(movedFromPath);
 
             var option = FSharpOptionStorage.GetOptions();
+            if (UpdateProject) createOrUpdateProject();
             if (option.autoBuild != AutoBuild.None && UpdateProject)
             {
-                createOrUpdateProject();
                 while (EditorApplication.isUpdating)
                 {
                     Wait();
