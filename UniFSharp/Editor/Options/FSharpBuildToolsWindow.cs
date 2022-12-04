@@ -213,12 +213,11 @@ namespace UniFSharp
 
         }
 
-        public override void SaveChanges()
+        private void OnDestroy()
         {
-
-            base.SaveChanges();
+            EditorUtility.SetDirty(FSharpOptionStorage.GetOptions());
         }
-        
+
     }
 }
 
