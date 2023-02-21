@@ -3,12 +3,10 @@ using System.IO;
 using UnityEngine;
 using System.Linq;
 using UnityEditorInternal;
-using System.Text.RegularExpressions;
 using System.Text;
 using System.Xml.Linq;
 using System;
-using Sirenix.Utilities;
-using static Codice.CM.Common.Serialization.PacketFileReader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UniFSharp
 {
@@ -33,7 +31,7 @@ namespace UniFSharp
             var assembliePath = FSharpOption.assemblyFileNamePath;
             if (File.Exists(assembliePath)) return;
 
-            using (var template = new StreamReader(FSharpOption.templateAssembly , new UTF8Encoding(false)))
+            using (var template = new StreamReader(FSharpOption.templateAssembly, new UTF8Encoding(false)))
             {
                 using (var sw = File.CreateText(assembliePath))
                 {
@@ -133,18 +131,18 @@ namespace UniFSharp
 
             var guid = "{" + UnityEditor.VisualStudioIntegration.SolutionGuidGenerator.GuidForProject(FSharpOption.assemblyFileName).ToString() + "}";
             // update 
-            FSharpScriptAssetPostprocessor.getXDocElements(fsprojXDoc, ns, "PropertyGroup")
+            FSharpScriptAssetPostprocessor.getXDocElements(fsprojXDoc, ns, "PropertyGroup").ToList()
                     .ForEach(p =>
                     {
-                        p.Elements(XName.Get(ns + "ProjectGuid")).ForEach(e => e.Value = guid);
-                        p.Elements(XName.Get(ns + "RootNamespace")).ForEach(e => e.Value = option.rootName);
-                        p.Elements(XName.Get(ns + "AssemblyName")).ForEach(e => e.Value = FSharpOption.assemblieName);
-                        p.Elements(XName.Get(ns + "TargetFramework")).ForEach(e => e.Value = AliasNameAttribute.ToAliasName<NetFramework, int>(option.netFramework));
-                        p.Elements(XName.Get(ns + "OutputPath")).ForEach(e => e.Value = FSharpOption.fsharpBinPath);
-                        p.Elements(XName.Get(ns + "DocumentationFile")).ForEach(e => e.Value = FSharpOption.fsharpBinPath + @"\DocumentationFile.xml");
+                        p.Elements(XName.Get(ns + "ProjectGuid")).ToList().ForEach(e => e.Value = guid);
+                        p.Elements(XName.Get(ns + "RootNamespace")).ToList().ForEach(e => e.Value = option.rootName);
+                        p.Elements(XName.Get(ns + "AssemblyName")).ToList().ForEach(e => e.Value = FSharpOption.assemblieName);
+                        p.Elements(XName.Get(ns + "TargetFramework")).ToList().ForEach(e => e.Value = AliasNameAttribute.ToAliasName<NetFramework, int>(option.netFramework));
+                        p.Elements(XName.Get(ns + "OutputPath")).ToList().ForEach(e => e.Value = FSharpOption.fsharpBinPath);
+                        p.Elements(XName.Get(ns + "DocumentationFile")).ToList().ForEach(e => e.Value = FSharpOption.fsharpBinPath + @"\DocumentationFile.xml");
                     });
             fsprojXDoc.Save(assembliePath);
-            
+
             var f = File.OpenWrite(assembliePath);
             f.Flush();
             f.Close();
