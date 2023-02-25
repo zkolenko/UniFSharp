@@ -67,7 +67,6 @@ namespace UniFSharp
         public static void ShowWindow()
         {
             option = FSharpOptionStorage.GetOptions();   
-            
             var window = UnityEditor.EditorWindow.GetWindow<FSharpBuildToolsWindow>(true, "UniFSharp" + " - F# Build Tools for Unity");
             section = CustomSections.applicationDll;
             var preferencesSectionStyle = new GUIStyle();
@@ -212,12 +211,11 @@ namespace UniFSharp
             EditorGUILayout.EndVertical();
 
         }
-
         private void OnDestroy()
         {
             EditorUtility.SetDirty(FSharpOptionStorage.GetOptions());
         }
-
+        
     }
 }
 

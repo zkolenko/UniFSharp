@@ -1,43 +1,67 @@
-﻿using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using UnityEditor;
-using UnityEngine;
+﻿#define USE
+#if USE
 using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine.UIElements;
-using UnityEngine.PlayerLoop;
-using UnityEditor.PackageManager.UI;
-using UnityEditor.UIElements;
-using UnityEditor.Overlays;
-using UnityEditor.SearchService;
-using UnityEditor.Graphs;
-using UnityEditor.U2D;
+using UnityEngine;
+using UnityEditor;
 using UnityEditorInternal;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Reflection;
 
 namespace UniFSharp
 {
-
-    //[CustomEditor(typeof(UnityEditor.DragAndDrop))]
-    [CustomEditor(typeof(UnityEngine.Transform))]
-    public class TransformInspector : Editor
+    [CustomEditor(typeof(Transform))]
+    public partial class SnapButtonsForInspectorGUI : UnityEditor.Editor
     {
-        void OnEnable()
-        {
-            Repaint();
-        }
-
         public override void OnInspectorGUI()
         {
+            if (targets == null || targets.Length == 0)
+            {
+                // base.DrawDefaultInspector();
+                return;
+            }
+            if (!Root.USE_SNAP_MOD)
+            {
+                SnapMod.SET_ENABLE(false);
+                return;
+            }
+            if (decoratedEditorType == null) decoratedEditorType = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.Editor)).GetType("UnityEditor.TransformInspector", true);
+            if (!EDITOR_INSTANCE) EDITOR_INSTANCE = UnityEditor.Editor.CreateEditor(targets, decoratedEditorType);
+            if (buttonStyle == null || !snapContent.image) InitStyles();
 
-            EditorGUILayout.BeginVertical();
-            (this.target as Transform).localPosition = EditorGUILayout.Vector3Field("Local Position", (this.target as Transform).localPosition);
-            (this.target as Transform).localRotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Local Rotation", (this.target as Transform).localRotation.eulerAngles));
-            (this.target as Transform).localScale = EditorGUILayout.Vector3Field("Local Scale", (this.target as Transform).localScale);
-            EditorGUILayout.EndVertical();
+
+            var start_y = EditorGUILayout.GetControlRect(GUILayout.Height(0), GUILayout.ExpandHeight(false)).y;
+            var window_width = GUILayoutUtility.GetLastRect().x + GUILayoutUtility.GetLastRect().width;
+
+            //////// BUTTONS ////////
+            CUSTOM_GUI(start_y, window_width);
+
+            // RIGHT PADDING
+            GUILayout.BeginHorizontal(); GUILayout.BeginVertical();
+
+            //////// INTERNAL GUI ////////
+            EDITOR_INSTANCE.OnInspectorGUI();
+
+            // RIGHT PADDING
+            GUILayout.EndVertical(); GUILayout.Space(buttonRectWidth); GUILayout.EndHorizontal();
+
+            /*  int controlID = GUIUtility.GetControlID(FocusType.Passive);
+            if (Event.current.Equals(Event.KeyboardEvent("W")))
+            {   Debug.Log(Event.current.GetTypeForControl(controlID));
+            }
+            if (Input.GetKey(KeyCode.C))
+            {   Debug.Log(Event.current.GetTypeForControl(controlID));
+            }
+            if (Event.current.type == EventType.Repaint)
+            {   var os = SnapMod.sceneKeyCode;
+                SnapMod.sceneKeyCode = KeyCode.None;
+                // if (os != KeyCode.None ) SnapMod. modifierKeysChanged_KEYS();
+            }*/
 
 
             if (DragAndDrop.objectReferences.Length > 0 && AssetDatabase.GetAssetPath(DragAndDrop.objectReferences[0]).EndsWith(".fs"))
@@ -53,7 +77,7 @@ namespace UniFSharp
                     case EventType.DragUpdated:
                     case EventType.DragPerform:
                         var didAcceptDrag = false;
-                        
+
                         DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
                         if (currentEvent.type == EventType.DragPerform)
                         {
@@ -183,3 +207,6 @@ namespace UniFSharp
         }
     }
 }
+#endif
+
+

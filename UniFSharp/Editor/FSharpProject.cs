@@ -6,7 +6,6 @@ using UnityEditorInternal;
 using System.Text;
 using System.Xml.Linq;
 using System;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace UniFSharp
 {
@@ -31,7 +30,7 @@ namespace UniFSharp
             var assembliePath = FSharpOption.assemblyFileNamePath;
             if (File.Exists(assembliePath)) return;
 
-            using (var template = new StreamReader(FSharpOption.templateAssembly, new UTF8Encoding(false)))
+            using (var template = new StreamReader(FSharpOption.templateAssembly , new UTF8Encoding(false)))
             {
                 using (var sw = File.CreateText(assembliePath))
                 {
@@ -142,7 +141,7 @@ namespace UniFSharp
                         p.Elements(XName.Get(ns + "DocumentationFile")).ToList().ForEach(e => e.Value = FSharpOption.fsharpBinPath + @"\DocumentationFile.xml");
                     });
             fsprojXDoc.Save(assembliePath);
-
+            
             var f = File.OpenWrite(assembliePath);
             f.Flush();
             f.Close();
