@@ -16,39 +16,30 @@ using System.Reflection;
 namespace UniFSharp
 {
     [CustomEditor(typeof(Transform))]
-    public partial class SnapButtonsForInspectorGUI : UnityEditor.Editor
+    public class FSharpTransformInspector : UnityEditor.Editor
     {
+        // inspector vars
+        static Type decoratedEditorType;
+        UnityEditor.Editor EDITOR_INSTANCE;
+
+
         public override void OnInspectorGUI()
         {
             if (targets == null || targets.Length == 0)
             {
-                // base.DrawDefaultInspector();
-                return;
-            }
-            if (!Root.USE_SNAP_MOD)
-            {
-                SnapMod.SET_ENABLE(false);
+                base.DrawDefaultInspector();
                 return;
             }
             if (decoratedEditorType == null) decoratedEditorType = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.Editor)).GetType("UnityEditor.TransformInspector", true);
             if (!EDITOR_INSTANCE) EDITOR_INSTANCE = UnityEditor.Editor.CreateEditor(targets, decoratedEditorType);
-            if (buttonStyle == null || !snapContent.image) InitStyles();
 
-
-            var start_y = EditorGUILayout.GetControlRect(GUILayout.Height(0), GUILayout.ExpandHeight(false)).y;
-            var window_width = GUILayoutUtility.GetLastRect().x + GUILayoutUtility.GetLastRect().width;
-
-            //////// BUTTONS ////////
-            CUSTOM_GUI(start_y, window_width);
-
-            // RIGHT PADDING
-            GUILayout.BeginHorizontal(); GUILayout.BeginVertical();
+            GUILayout.BeginVertical();
 
             //////// INTERNAL GUI ////////
             EDITOR_INSTANCE.OnInspectorGUI();
 
             // RIGHT PADDING
-            GUILayout.EndVertical(); GUILayout.Space(buttonRectWidth); GUILayout.EndHorizontal();
+            GUILayout.EndVertical(); 
 
             /*  int controlID = GUIUtility.GetControlID(FocusType.Passive);
             if (Event.current.Equals(Event.KeyboardEvent("W")))
